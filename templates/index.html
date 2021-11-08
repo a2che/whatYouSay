@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ПРИЛОЖЕНИЕ</title>
+</head>
+<body style="text-align: center;">
+	<div style="float: left; border: 1px solid black; display: flex; flex-direction: column;">
+		<h2>МЕГА КРУТОЙ ИНТЕРФЕЙС ТЕМ</h2>
+		<div>
+
+				<input type="text" id="themeName" placeholder="Name">
+				<div id = "themes">
+					<input type="text" class="themeWord" onfocus onkeypress="addPlate(event)">
+					<input type="radio" name="0" value = "1" checked>
+					<input type="radio" name="0" value="0">
+
+				</div>
+				<button onclick="sendTheme()">Добавить</button>
+
+		</div>
+		
+	</div>
+	<div id = "scroll" style="overflow-y: scroll; height : 200px;" onscroll="nextPage()">
+
+	</div>
+	<div style="float: left; border: 1px solid black; display: flex; flex-direction: column;">
+		<h2>Темы</h2>
+		<div id = "themesList">
+			{% for t in themes %}
+			<div><a onclick="getUsersBy('{{t[1]}}')"><h2>{{t[0]}}</h2></a></div>
+			{% endfor %}
+		</div>
+	</div>
+
+
+					<div class="container-fluid lineChart-container" id="lineChart-container">
+					<div class="row mt-2 justify-content-center">
+						<div class="col-6 mt-5 p-0">
+							<canvas id="lineChart" height="200" width="200"></canvas>
+						</div>
+					</div>
+				</div>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script type="text/javascript" src = "{{url_for('static',filename = 'main/theme.js')}}?27"></script>
+	<script type="text/javascript" src = "{{url_for('static',filename = 'main/results.js')}}?84"></script>
+	<script type="text/javascript">
+		  var datasets = []
+		  var labels = []
+		  {% for l in lables %}
+		  	labels.push("{{l}}")
+		  {% endfor %}
+		  {% for d in stat.keys() %}
+		  	datasets.push({
+            label: "{{stat[d]['Title']}}",
+                fill:false,
+                lineTension:0.1,
+                backgroundColor:"{{stat[d]['Color']}}",
+                borderColor:"{{stat[d]['Color']}}",
+                borderCapStyle:'butt', 
+                borderDash:[],
+                borderDashOffset:0.0,
+                borderJoinStyle:'miter',
+                pointBorderColor:"{{stat[d]['Color']}}",
+                pointBackgroundColor:"{{stat[d]['Color']}}",
+                pointBorderWidth:10,
+                pointHoverRadius:5,
+                pointHoverBackgroundColor: "{{stat[d]['Color']}}",
+                pointHoverBorderColor:"{{stat[d]['Color']}}",
+                pointHoverBorderWidth:8,
+                pointRadius:1,
+                pointHitRadius:10,
+                data: {{stat[d]["Nums"]}},
+        })
+		  {% endfor %} 
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+	<script type="text/javascript" src = "{{url_for('static',filename = 'js/diagramm.js')}}?29?1"></script>
+
+</body>
+</html>

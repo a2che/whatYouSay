@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WhatYouSay</title>
+	<link rel="icon" href="../static/images/favicon.ico">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<link rel="stylesheet" href="{{url_for('static', filename = 'css/MainCSS.css')}}?55">
+	<link rel="stylesheet" href="../static/css/MainCSS.css">
+</head>
+
+<body style="background-image: url(../static/images/bg.jpg);">
+
+
+
+
+	<!-- HEADER -->
+
+
+
+<div class="container-fluid h-100 p-0 m-0">
+	<div class="container-fluid  head-otst" >
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light py-0">
+			<div class="col-5 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+				<a class="navbar-brand" href="#">
+		  	<img class="w-100" src="../static/images/logo.png" alt="">
+		  </a>
+			</div>
+		  
+		  <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" >
+		    <ul class="navbar-nav">
+		      <li class="nav-item dropdown btn-sm">
+		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		          {{login}}
+		        </a>
+		        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+		          <a class="dropdown-item" href="/logOut" onclick = "logOut()">Выйти</a>
+		        </div>
+		      </li>
+		    </ul>
+		  </div>
+		</nav>
+	</div>
+	<div class="bighr"></div>
+	<!-- Основное тело-->
+	
+		<div class="row main-container justify-content-around">
+
+	
+
+<!-- ФИЛЬТРЫ -->
+			<div class="col-5 col-md-4 col-lg-3 col-xl-2 filters p-0 pl-2 order-1">
+				<!-- <p class="filters-title text-center mt-2">Фильтры</p> -->
+				<br>
+				<div class="col ml-0 ml-sm-5">
+					<div class="custom-control custom-switch">
+					    <input type="checkbox" class="custom-control-input" onclick="filter()" id="Vk" checked>
+					    <label class="custom-control-label" for="Vk">Vkontakte</label>
+					  </div><br>
+
+					  <div class="custom-control custom-switch">
+					    <input type="checkbox" class="custom-control-input" onclick="filter()" id="Youtube" checked>
+					    <label class="custom-control-label" for="Youtube">Youtube</label>
+					  </div><br>
+
+					  <div class="custom-control custom-switch">
+					    <input type="checkbox" class="custom-control-input" onclick="filter()" id="Reddit" checked>
+					    <label class="custom-control-label" for="Reddit">Reddit</label>
+					  </div><br>
+
+					  <div class="custom-control custom-switch">
+					    <input type="checkbox" class="custom-control-input" onclick="filter()" id="HH" checked>
+					    <label class="custom-control-label" for="HH">Head Hunter</label>
+					  </div>
+
+				</div>
+			</div>
+			
+<!-- ТЕМЫ  -->
+
+
+			<div class="col-7 col-md-4 col-lg-3 col-xl-2 themes p-0 text-center order-3">
+				<div class="row m-0 h-100">
+					<div class="col-12 mt-2">
+						<button type="button" data-toggle="modal" data-target="#theme-modal" class=" addTheme-button text-center">Добавить <br> тему</button>
+					</div>
+					<div class="col-12 h-100">
+						<div class="themes-area mt-2">
+							<div class="nav flex-column nav-pills" id="themesList">
+
+						{% for t in themes %}
+
+
+
+								<div class="input-group  mb-3 pr-2">
+						        	<div  class="form-control" placeholder="Ключевое слово" aria-label="Название темы" onclick="getUsersBy('{{t[1]}}',this);" data-toggle="pill" href="#" aria-selected="true" style="cursor: pointer;">
+						        		<p class="keyWordStyle">{{t[0]}}</p></div>
+									  <div class="input-group-prepend">
+									    <button class="input-group-text" type="button" data-toggle="modal" data-target="#theme-settings">
+									    	<img src="../static/images/shesterenka.png" alt="" width="20px">
+									    </button>
+									  	
+											<button class="input-group-text" onclick="СЮДА ОНКЛИК">
+												
+									    		<img id="exel{{t[1]}}" src="../static/images/exel-icon.png" alt="" width="24px" style="
+									    		-webkit-filter: grayscale(100%);
+												-moz-filter: grayscale(100%);
+											    -ms-filter: grayscale(100%);
+												-o-filter: grayscale(100%);
+												filter: grayscale(100%);
+												filter: gray;">
+									    		<!-- Чтобы стала цветной - удали стиль -->
+									    	</button>
+										
+									    	
+									    
+									  </div>
+								</div>
+				    	{% endfor %}
+
+    						</div>
+    					</div>
+					</div>
+				</div>
+    		</div>
+
+<!-- Модальное окно -->
+				<div class="modal fade " id="theme-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
+
+<div class="modal-dialog">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	    		<h5 class="modal-title">Добавление темы</h5>
+	    		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	    			<span aria-hidden="true">&times;</span>
+	    		</button>
+	    	</div>
+	    	<div class="modal-body">
+				<div class="row">
+					<div class="col-12">
+						<label for="theme_1">Название темы</label>
+						<div class="input-group mb-3">
+				        	<input type="text" class="form-control disabled">
+						</div>
+					</div>
+					<div class="col-9">
+						<label for="theme_1">Ключевое слово #1</label>
+						<div class="input-group input-group-sm mb-3">
+
+				        	<input type="text" class="form-control  " onfocus onkeypress="addPlate(event)">
+							  <div class="input-group-prepend">
+							    
+							    <button class="input-group-text">
+							    	<img src="../static/images/udalit.png" alt="" width="15px">
+							    </button>
+							  </div>
+						</div>
+					</div>
+					<div class="col-12 ">
+						<button class="input-group-text" align="center">
+							<img src="../static/images/plusadd.png" alt="" width="20px">
+						</button>
+					</div>
+									
+				</div>
+				
+	    	</div>
+
+	    	<div class="modal-footer justify-content-center">
+				<button type="button" class="btn btn-primary btnSohranit"  data-dismiss="modal" aria-label="Close" onclick = "sendTheme()">Сохранить</button>
+			</div>
+	    </div>
+  	</div>		
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- //Модальное окно -->
+<!-- Модальное окно -->
+
+<div class="modal fade"  id="theme-settings" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
+	<div class="modal-dialog" style="border: 2px solid #1E0849;">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title">Настройки темы</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+
+
+			<div class="row">
+				<div class="col-12">
+					<label for="theme_1">Название темы</label>
+					<div class="input-group mb-3">
+			        	<p type="text" class="form-control disabled" placeholder="Название темы" aria-label="Название темы">Путенвор</p>
+						  <div class="input-group-prepend">
+						  	<button class="input-group-text">
+						    	<img src="../static/images/pen.png" alt="" width="20px">
+						    </button>
+						    <button class="input-group-text">
+						    	<img id="exel{{t[1]}}" width="20px" src="../static/images/exel-icon.png" alt="">
+						    </button>
+						  </div>
+					</div>
+				</div>
+				<div class="col-9">
+					<label for="theme_1">Ключевое слово #1</label>
+					<div class="input-group input-group-sm mb-3">
+
+			        	<input type="text" class="form-control" placeholder="Ключевое слово" aria-label="Название темы">
+						  <div class="input-group-prepend">
+						    <button class="input-group-text">
+						    	<img src="../static/images/pen.png" alt="" width="20px">
+						    </button>
+						    <button class="input-group-text">
+						    	<img src="../static/images/udalit.png" alt="" width="15px">
+						    </button>
+						  </div>
+					</div>
+				</div>
+				<div class="col-6 text-center justify-content-between">
+					<button class="m-0 input-group-text align-self-center" align="center" style="">
+						<img src="../static/images/plusadd.png" alt="" width="20px">
+					</button>
+				</div>
+				<div class="col-6 text-right">
+					<a href="" class="align-bottom" style="color: red;">Удалить тему</a>
+				</div>
+			</div>
+			
+	        
+			
+
+
+
+
+	      </div>
+	      <div class="modal-footer justify-content-center">
+				<button type="button" class="btn btn-primary btnSohranit"  data-dismiss="modal" aria-label="Close" onclick = "sendTheme()">Сохранить</button>
+			</div>
+	    </div>
+  	</div>		
+</div>
+
+
+
+
+
+<!-- //Модальное окно -->
+
+
+
+
+
+
+
+
+			<!-- ОСНОВНОЙ КОНТЕНТ -->
+			<div class="col-12 col-lg-6 col-xl-8 osn-content p-0 order-2" id="postScrol"  >
+				<!-- Сова -->
+				<div id="sov-container">
+					<div class="sova-full">
+						<img src="../static/images/sova/head.png" id="sov-head" alt="">
+						<div id="krug"></div>
+						<div id="krug2"></div>
+						<img src="../static/images/sova/zrachki.png" id="sov-zrachki" alt="">
+						<img src="../static/images/sova/body.png" id="sov-body" alt="">
+						<h3 id="sov-text" class="text-center">Загрузка<span id="sov-text1">.</span><span id="sov-text2">.</span><span id="sov-text3">.</span></h3>
+					</div>
+				</div>
+				<div id="start-container" class="text-center">
+					<div class="row h-75">
+						<div class="col align-self-center">
+							<h2>Выберите тему</h2>
+						</div>
+					</div>
+					
+				</div>
+				
+					<!-- <img src="../static/images/owl-student-teacher-clip-art-cartoon-owl.jpg"width="200px" id="sova" alt=""> -->
+
+
+
+
+
+
+				<!-- Посты ВК -->
+				<div class="container-fluid posts-container mb-1  " id="posts-container" onscroll="nextPage(true,'posts-container')">
+				<div class="vk-cont" >
+						
+					<div class="row text-center post align-items-center  m-2 ">
+	
+						<div class="col-3 col-sm-2 col-xl-1 my-2">
+							<img src="../static/images/icon_profile.png" alt="" class="post-avatar">
+						</div>
+						<div class="col-9 col-sm-10 col-xl-11  post-links">
+							<div class="row ">
+								<div class="col-4 text-left post-title">
+									<p>Имя пользователя</p>
+
+								</div>
+								<div class="col text-center post-title">
+
+									<p>20.01.2020</p>
+
+								</div>
+								<div class="col post-title text-right pr-2">
+
+									<a href="#">https://vk.com/id_0000000</a>
+								</div>
+							</div>
+							<div class="row pr-2">
+								<div class="col-12 p-0">
+
+
+									<p class="post-text" id="shortText1" style="display: block;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porpsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porro, architecto sunt voluptatibus! Ex, voluptate ptate ipsa ipsum omnis ipsam quisquamat.</p>
+									
+
+
+								</div>
+							</div>
+						</div>
+						<div class="col-12 post-text-collapse__opener">
+							<div style="position: absolute;">
+								<span>Vkontakte</span>
+							</div>
+							<div class="text-right">
+								<a  data-toggle="collapse" href="#fullText1" role="button" aria-expanded="false" aria-controls="collapse" aria-controls="post-text-collapse" onclick="openText(1)"   style="line-height: 0px;">Открыть текст</a>
+									<div class="collapse text-justify" id="fullText1">
+												<div class="card card-body ">
+													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porpsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porro, architecto sunt voluptatibus! Ex, voluptate ipsa ipsum omnis ipsam quisquamapsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porro, architecto sunt voluptatibus! Ex, voluptate ipsa ipsum omnis ipsam quisquamaro, architecto sunt voluptatibus! Ex, voluptate ipsa ipsum omnis ipsam quisquamat.</p>
+												</div>
+											</div>
+							</div>
+							
+							
+
+
+
+											
+						</div>
+					</div>
+				</div>
+				<div class="youtube-cont">
+						
+					<div class="row text-center post align-items-center  m-2 ">
+						<div class="col-12 pl-4 pt-2 post-links">
+							<div class="row ">
+								<div class="col-4 text-left post-title">
+									<p>Название канала</p>
+
+								</div>
+								<div class="col text-center yout-padd post-title">
+
+									<p>20.01.2020</p>
+
+								</div>
+								<div class="col post-title text-right pr-2">
+
+									<a href="#">Название видео</a>
+								</div>
+							</div>
+							<div class="row pr-2">
+
+								<div class="col-12 p-0">
+
+
+									<p class="post-text" id="shortText1" style="display: block;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porpsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porro, architecto sunt voluptatibus! Ex, voluptate ptate ipsa ipsum omnis ipsam quisquamat.</p>
+									
+
+
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-12 post-text-collapse__opener text-right">
+						<div style="position: absolute;">
+								<span>Youtube</span>
+							</div>
+							<a align="right" data-toggle="collapse" href="#fullText1" role="button" aria-expanded="false" aria-controls="collapse" aria-controls="post-text-collapse" onclick="openText(1)"   style="line-height: 0px;">Открыть видео</a>
+
+
+
+
+											<div class="collapse text-justify" id="fullText1">
+												<div class="card card-body">
+													<div class="row justify-content-center">
+														<div class="col-12 col-sm-10 col-md-8 ">
+															<iframe width="100%" class="align-self-center" height="315" src="https://www.youtube.com/embed/Bf9zvyPachs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+														</div>
+													</div>
+												</div>
+											</div>
+						</div>
+					</div>
+				</div>
+				<div class="reddit-cont">
+						
+					<div class="row text-center post align-items-center  m-2 ">
+	
+						<div class="col-3 col-sm-2 col-xl-1 my-2">
+							<img src="../static/images/icon_profile.png" alt="" class="post-avatar">
+						</div>
+						<div class="col-9 col-sm-10 col-xl-11  post-links">
+							<div class="row ">
+								<div class="col-4 text-left post-title">
+									<p>Имя пользователя</p>
+
+								</div>
+								<div class="col text-center post-title">
+
+									<p>20.01.2020</p>
+
+								</div>
+								<div class="col post-title text-right pr-2">
+
+									<a href="#">https://vk.com/id_0000000</a>
+								</div>
+							</div>
+							<div class="row pr-2">
+								<div class="col-12 p-0">
+
+
+									<p class="post-text" id="shortText1" style="display: block;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porpsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porro, architecto sunt voluptatibus! Ex, voluptate ptate ipsa ipsum omnis ipsam quisquamat.</p>
+									
+
+
+								</div>
+							</div>
+						</div>
+						<div class="col-12 post-text-collapse__opener text-right">
+							<div style="position: absolute;">
+								<span>Reddit</span>
+							</div>
+							<a align="right" data-toggle="collapse" href="#fullText1" role="button" aria-expanded="false" aria-controls="collapse" aria-controls="post-text-collapse" onclick="openText(1)"   style="line-height: 0px;">Открыть текст</a>
+
+
+
+
+											<div class="collapse text-justify" id="fullText1">
+												<div class="card card-body ">
+													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porpsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porro, architecto sunt voluptatibus! Ex, voluptate ipsa ipsum omnis ipsam quisquamapsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porro, architecto sunt voluptatibus! Ex, voluptate ipsa ipsum omnis ipsam quisquamaro, architecto sunt voluptatibus! Ex, voluptate ipsa ipsum omnis ipsam quisquamat.</p>
+												</div>
+											</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="hh-cont" >
+						
+					<div class="row text-center post align-items-center  m-2 ">
+	
+						<div class="col-3 col-sm-2 col-xl-1 my-2">
+							<img src="../static/images/icon_profile.png" alt="" class="post-avatar">
+						</div>
+						<div class="col-9 col-sm-10 col-xl-11  post-links">
+							<div class="row ">
+								<div class="col-4 text-left post-title">
+									<p>должность вакансии</p>
+
+								</div>
+								<div class="col text-center post-title">
+
+									<p>20.01.2020</p>
+
+								</div>
+								<div class="col post-title text-right pr-2">
+
+									<a href="#">Компания</a>
+								</div>
+							</div>
+							<div class="row pr-2">
+								<div class="col-12 p-0">
+
+
+									<p class="post-text" id="shortText1" style="display: block;">текст вакансии</p>
+									
+
+
+								</div>
+							</div>
+						</div>
+						<div class="col-12 post-text-collapse__opener">
+							<div style="position: absolute;">
+								<span>HeadHunter</span>
+							</div>
+							<div class="text-right">
+								<a  data-toggle="collapse" href="#fullText1" role="button" aria-expanded="false" aria-controls="collapse" aria-controls="post-text-collapse" onclick="openText(1)"   style="line-height: 0px;">Открыть текст</a>
+									<div class="collapse text-justify" id="fullText1">
+												<div class="card card-body ">
+													<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porpsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porro, architecto sunt voluptatibus! Ex, voluptate ipsa ipsum omnis ipsam quisquamapsum dolor sit amet, consectetur adipisicing elit. Quaerat tempore nostrum dolores ex porro, architecto sunt voluptatibus! Ex, voluptate ipsa ipsum omnis ipsam quisquamaro, architecto sunt voluptatibus! Ex, voluptate ipsa ipsum omnis ipsam quisquamat.</p>
+												</div>
+											</div>
+							</div>
+							
+							
+
+
+
+											
+						</div>
+					</div>
+				</div>
+			</div>
+				
+
+
+
+
+
+
+
+
+
+
+
+				<!-- Таблица авторов -->
+				<div class="authors-container container-fluid mt-2" id="authors-container" onscroll="nextPage(false,'authors-container')">
+					<div class="table-responsive-xl">
+						<table class="table table-hover" id = "authors">
+							<thead> 
+								<tr class=" align-items-center">
+									<th class="align-middle" scope="col">Фото</th>
+									<th class="align-middle" scope="col">Имя</th>
+									<th class="align-middle" scope="col">Платформа</th>
+									<th class="align-middle" scope="col">Частота упоминания</th>
+									<th class="align-middle" scope="col">Дата</th>
+									
+								</tr>
+							</thead>
+							<tbody id = "tableBody">
+								<tr>
+									<td class="align-middle">
+										<img src="../static/images/icon_profile.png" alt="" class="w-50">
+									</td>
+									<td class="align-middle"><a href="https://vk.com/id_alex2ch?z=photo-141959356_458186305%2Fwall320505497_907">
+											Иван Иванович Иванов
+										</a></td>
+									<td class="align-middle">Вконтакте</td>
+									<td class="align-middle">Встречается часто</td>
+									<td class="align-middle">27.07.2020</td>
+									
+								</tr>
+							</tbody> 
+						</table>
+					</div>
+				</div>
+
+
+
+
+
+
+
+				<!-- Графики -->
+				<div class="container-fluid lineChart-container" id="lineChart-container">
+					<div class="row  justify-content-center">
+						<div class="col-6 p-0">
+							<canvas id="lineChart"height="200" width="200"></canvas>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- Диаграмма -->
+				<div class="container-fluid doughnutChart-container" id="doughnutChart-container">
+					<div class="row  justify-content-center">
+						<div class="col-12 col-lg-10 p-0">
+							<canvas id="myDoughnutChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+
+		<!-- TABBAR -->
+
+	<div class="footerbar">
+			<div class=" row px-3 py-1  justify-content-between tab-obertka align-items-center">
+				<div class="col-3 h-100 text-center p-0">			
+					<button class="h-100 text-center tabbar-button" style="background-color: #D0D0D0; " autofocus onclick="
+						changeScreen(0,this) 
+					" 
+					>
+							<img class="w-100" src="../static/images/tabbar_icon1.png" alt="">
+						</button>
+				</div>
+				<div class="col-3 h-100 text-center p-0">
+					<button class="h-100 text-center tabbar-button " onclick="
+						changeScreen(1,this) 
+						"
+						>
+							<img class="w-100" src="../static/images/tabbar_icon2.png" alt="">
+						</button>
+				</div>
+
+
+
+
+				<div class="col-3 h-100 text-center p-0">
+					<button class="h-100 text-center tabbar-button "  onclick="
+						changeScreen(2,this) 
+						
+						" 
+						>
+							<img class="w-100" src="../static/images/tabbar_icon3.png" alt="">
+						</button>
+
+				</div>
+				<div class="col-3 h-100 text-center p-0 ">
+					<button class="text-center h-100 tabbar-button " onclick="
+						changeScreen(3,this) 
+						
+					" 
+					>
+							<img class="w-100" src="../static/images/tabbar_icon4.png" alt="">
+					</button>
+				</div>
+			</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="{{url_for('static', filename = 'js/functions.js')}}"></script>
+<script type="text/javascript" src="../static/js/functions.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+
+<script type="text/javascript" src="{{url_for('static', filename = 'js/diagramm.js')}}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+<script type="text/javascript" src="../static/js/diagramm.js"></script>
+
+
+	<script type="text/javascript" src = "{{url_for('static',filename = 'main/theme.js')}}?38"></script>
+	<script type="text/javascript" src = "{{url_for('static',filename = 'main/results.js')}}?130"></script>
+	<script type="text/javascript" src = "../static/main/results.js?130"></script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+</body>
+</html>
